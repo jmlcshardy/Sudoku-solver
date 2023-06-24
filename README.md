@@ -1,4 +1,4 @@
 # Sudoku-solver
-Solves sudoku boards
+Solving sudoku boards since 2023
 
-doesn't work yet
+Uses the backtracking algorithm to solve sudoku puzzles.
