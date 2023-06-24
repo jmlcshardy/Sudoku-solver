@@ -1,55 +1,80 @@
-sudoku_board = [[9, 0, 0, 0, 0, 0, 1, 0, 6],
-                [6, 4, 0, 0, 0, 0, 0, 0, 0],
-                [0, 2, 7, 0, 0, 5, 0, 0, 3],
-                [3, 0, 4, 0, 0, 9, 5, 0, 1],
-                [0, 0, 5, 0, 0, 0, 4, 2, 0],
-                [0, 6, 0, 5, 0, 4, 0, 0, 8],
-                [0, 9, 0, 7, 5, 0, 0, 3, 0],
-                [0, 0, 8, 6, 0, 0, 7, 4, 0],
-                [0, 0, 0, 0, 0, 0, 0, 9, 0]]
+sudoku_board = []
+
+for i in range(9):
+    row = input(f"Enter row {i + 1}: ")
+    sudoku_board.append([int(char) for char in row])
 
 
-def check_square(pos1, pos2, board):
-    numbers = [num for num in range(1, 10)]
+def check_square(pos1, pos2, board, number):
     for i in range(9):
-        if board[pos2][i] in numbers:
-            numbers.remove(board[pos2][i])
-        if board[i][pos1] in numbers:
-            numbers.remove(board[i][pos1])
-    row_start = (pos2 // 3) * 3
-    col_start = (pos1 // 3) * 3
+        if board[i][pos2] == number or board[pos1][i] == number:
+            return False
+    row_start = (pos1 // 3) * 3
+    col_start = (pos2 // 3) * 3
     for i in range(row_start, row_start + 3):
         for j in range(col_start, col_start + 3):
-            if board[i][j] in numbers:
-                numbers.remove(board[i][j])
-
-    if len(numbers) == 1:
-        return numbers[0]
-    else:
-        return 0
-
-
-def check_zeros(board):
-    for i in board:
-        for j in i:
-            if j == 0:
+            if board[i][j] == number:
                 return False
+
     return True
 
 
-zeros = check_zeros(sudoku_board)
+# https://stackoverflow.com/questions/72159405/how-to-print-sudoku-board-using-python-class
+def print_board(board):
+    for row in range(len(board)):
+        if row % 3 == 0 and row != 0:
+            print("- - - - - - - - - - - - - ")
+        for col in range(len(board[0])):
+            if col % 3 == 0 and col != 0:
+                print(" | ", end="")
 
-times = 0
-while not zeros:
+            if col == 8:
+                print(board[row][col])
+            else:
+                print(str(board[row][col]) + " ", end="")
+
+
+def find_next_zero(board):
     for i in range(9):
         for j in range(9):
-            if sudoku_board[i][j] == 0:
-                replace_num = check_square(i, j, sudoku_board)
-                sudoku_board[i][j] = replace_num
-                if replace_num != 0:
-                    print(sudoku_board)
-    zeros = check_zeros(sudoku_board)
-    times += 1
+            if board[i][j] == 0:
+                return i, j
+    return None
 
-    print(times)
-print(sudoku_board)
+
+print_board(sudoku_board)
+
+found = []
+col, row = find_next_zero(sudoku_board)
+currentNum = 1
+numFound = True
+solved = False
+
+while not solved:
+    numFound = False
+    while not numFound and currentNum < 10:
+        if check_square(col, row, sudoku_board, currentNum):
+            sudoku_board[col][row] = currentNum
+            numFound = True
+            found.append([col, row, currentNum])
+            currentNum = 1
+            next_zero = find_next_zero(sudoku_board)
+            if next_zero is None:
+                solved = True
+            else:
+                col, row = next_zero
+
+        else:
+            currentNum += 1
+
+    if not numFound:
+        if found:
+            col, row, currentNum = found.pop()
+            currentNum += 1
+            print(found)
+            sudoku_board[col][row] = 0
+        else:
+            print_board(sudoku_board)
+            raise Exception("Board can't be solved")
+
+print_board(sudoku_board)
