@@ -71,6 +71,9 @@ def find_next_zero(board):
 
 
 def gui():
+
+    pygame.event.pump()
+
     screen.fill((255, 255, 255))
 
     for i in range(10):
@@ -145,7 +148,7 @@ def show_buttons():
     showSpeed = font.render("Speed", True, (0, 0, 0))
     screen.blit(showSpeed, (730, 500))
 
-    speed1 = Button(670, 550, "1", 50, 50)
+    speed1 = Button(670, 550, ">", 50, 50)
     if speed1.detect_collide(mousePos[0], mousePos[1]):
         speed1.draw((3, 37, 126))
         if mouse[0]:
@@ -155,7 +158,7 @@ def show_buttons():
     else:
         speed1.draw((0, 191, 255))
 
-    speed2 = Button(740, 550, "2", 50, 50)
+    speed2 = Button(740, 550, ">>", 50, 50)
     if speed2.detect_collide(mousePos[0], mousePos[1]):
         speed2.draw((3, 37, 126))
         if mouse[0]:
@@ -165,7 +168,7 @@ def show_buttons():
     else:
         speed2.draw((0, 191, 255))
 
-    speed3 = Button(810, 550, "3", 50, 50)
+    speed3 = Button(810, 550, ">>>", 50, 50)
     if speed3.detect_collide(mousePos[0], mousePos[1]):
         speed3.draw((3, 37, 126))
         if mouse[0]:
@@ -192,8 +195,6 @@ def show_buttons():
                     sudoku_board[i][j] = 0
     else:
         reset.draw((255, 51, 51))
-    pygame.display.update()
-
     pygame.display.update()
 
 
@@ -241,7 +242,7 @@ def main():
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            quit()
+            pygame.quit()
 
     keys = pygame.key.get_pressed()
     mousePos = pygame.mouse.get_pos()
@@ -249,3 +250,7 @@ while True:
 
     gui()
     show_buttons()
+
+    pygame.display.update()
+
+pygame.quit()
